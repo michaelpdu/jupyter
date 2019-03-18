@@ -30,3 +30,6 @@ c.NotebookApp.port = 6484 # change to your port
 ```
 nohup jupyter notebook --allow-root > jupyter.log 2>&1 &
 ```
+
+- Access Jupyter server in your desktop browser
+
