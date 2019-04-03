@@ -19,6 +19,10 @@ def open_image(image_path):
 def vgg_preprocessing(images):
     return images - [123.68, 116.78, 103.94]
 
+def save_image(image, image_path):
+    ui8_image = Image.fromarray(image.astype(np.uint8))
+    ui8_image.save(image_path)
+
 def main(image_path, ckpt_path):
     images = tf.placeholder(tf.float32, (None, 224, 224, 3))
     preprocessed = vgg_preprocessing(images)
@@ -38,12 +42,16 @@ def main(image_path, ckpt_path):
 
         adversarial = attack(image, label=label)
 
-        plt.subplot(1, 3, 1)
-        plt.imshow(image)
-        plt.subplot(1, 3, 2)
-        plt.imshow(adversarial)
-        plt.subplot(1, 3, 3)
-        plt.imshow(adversarial - image)
+        # plt.subplot(1, 3, 1)
+        # plt.imshow(image)
+        # plt.subplot(1, 3, 2)
+        # plt.imshow(adversarial)
+        # plt.subplot(1, 3, 3)
+        # plt.imshow(adversarial - image)
+
+        save_image(image, 'image_raw.jpg')
+        save_image(adversarial, 'image_adv.jpg')
+        save_image(adversarial-image, 'image_purt.jpg')
 
 if __name__ == '__main__':
     main(sys.argv[1], sys.argv[2])
