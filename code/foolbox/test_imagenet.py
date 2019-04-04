@@ -14,11 +14,10 @@ from foolbox.attacks import LocalSearchAttack
 import matplotlib.pyplot as plt
 from image_util import *
 
-
 def main(image_path, ckpt_path, predict_status=False):
     images = tf.placeholder(tf.float32, (None, 224, 224, 3))
-    preprocessed = vgg_preprocessing(images)
-    logits, _ = vgg.vgg_19(preprocessed, is_training=False)
+    preprocessed_images = vgg_preprocessing(images)
+    logits, _ = vgg.vgg_19(preprocessed_images, is_training=False)
     restorer = tf.train.Saver(tf.trainable_variables())
 
     image = open_image(image_path)
