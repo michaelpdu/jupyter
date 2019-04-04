@@ -8,6 +8,7 @@ from foolbox.models import TensorFlowModel
 from foolbox.criteria import TargetClassProbability
 from foolbox.attacks import LBFGSAttack
 from foolbox.attacks import FGSM
+from foolbox.attacks import MomentumIterativeAttack
 from foolbox.attacks import SinglePixelAttack
 from foolbox.attacks import LocalSearchAttack
 import matplotlib.pyplot as plt
@@ -38,8 +39,11 @@ def main(image_path, ckpt_path, predict_status=False):
 
         # attack = LBFGSAttack(model, criterion)
 
-        attack = FGSM(model)
         # attack = FGSM(model, criterion)
+        attack = FGSM(model)
+
+        # attack = MomentumIterativeAttack(model, criterion)
+        # attack = MomentumIterativeAttack(model)
 
         # attack = SinglePixelAttack(model)
         # attack = LocalSearchAttack(model)
