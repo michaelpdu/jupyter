@@ -78,8 +78,8 @@ def attack(pb_path, image_path):
         print('label:', categories[label])
 
         print('attacking...')
-        # target_class = 22
-        # criterion = TargetClassProbability(target_class, p=0.99)
+        target_class = 2
+        criterion = TargetClassProbability(target_class, p=0.99)
 
         # attack = LBFGSAttack(model, criterion)
 
