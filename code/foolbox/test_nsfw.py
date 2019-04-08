@@ -8,6 +8,9 @@ from foolbox.criteria import TargetClassProbability
 from foolbox.attacks import LBFGSAttack
 from foolbox.attacks import FGSM
 from foolbox.attacks import MomentumIterativeAttack
+from foolbox.attacks import LinfinityBasicIterativeAttack
+from foolbox.attacks import L1BasicIterativeAttack
+from foolbox.attacks import L2BasicIterativeAttack
 from foolbox.attacks import SinglePixelAttack
 from foolbox.attacks import LocalSearchAttack
 import matplotlib.pyplot as plt
@@ -26,7 +29,8 @@ def predict_dir(model, dir_path):
                 image = inception_preprocessing(open_image(image_path, 299, 299))
                 value = model.predictions(image)
                 label = np.argmax(value)
-                print(name, ': ', value, ': ', label)
+                prob = value[label]
+                print(name, ': ', value, ': ', label, ': ', prob)
 
 def predict(pb_path, image_path):
     with tf.Session() as session:
@@ -77,7 +81,7 @@ def attack(pb_path, image_path):
 
         print('attacking...')
         target_class = 2
-        for prob in range(60, 100, 5):
+        for prob in range(95, 100, 1):
             prob = prob/100
             print('probability is:', prob)
             adv_path = '{}-adv-{}{}'.format(p, prob, ext)
@@ -87,7 +91,11 @@ def attack(pb_path, image_path):
 
             # attack = LBFGSAttack(model, criterion)
             # attack = FGSM(model, criterion)
-            attack = MomentumIterativeAttack(model, criterion)
+            # attack = ProjectedGradientDescentAttack(model, criterion)
+            attack = LinfinityBasicIterativeAttack(model, criterion)
+            # attack = L1BasicIterativeAttack(model, criterion)
+            # attack = L2BasicIterativeAttack(model, criterion)
+            # attack = MomentumIterativeAttack(model, criterion)
 
             # attack = FGSM(model)
             # attack = MomentumIterativeAttack(model)

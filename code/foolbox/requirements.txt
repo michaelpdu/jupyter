@@ -1,0 +1,5 @@
+foolbox
+tensorflow-gpu==1.12.0
+Pillow
+scipy
+matplotlib
