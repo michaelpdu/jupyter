@@ -70,8 +70,6 @@ def attack(pb_path, image_path):
 
         image = inception_preprocessing(open_image(image_path, 299, 299))
         p, ext = os.path.splitext(image_path)
-        adv_path = p+'-adv'+ext
-        pert_path = p+'-pert'+ext
 
         values = model.predictions(image)
         label = np.argmax(values)
@@ -79,38 +77,42 @@ def attack(pb_path, image_path):
 
         print('attacking...')
         target_class = 2
-        criterion = TargetClassProbability(target_class, p=0.99)
+        for prob in range(60, 100, 5):
+            prob = prob/100
+            print('probability is:', prob)
+            adv_path = '{}-adv-{}{}'.format(p, prob, ext)
+            pert_path = '{}-pert-{}{}'.format(p, prob, ext)
+            
+            criterion = TargetClassProbability(target_class, p=prob)
 
-        # attack = LBFGSAttack(model, criterion)
+            # attack = LBFGSAttack(model, criterion)
+            # attack = FGSM(model, criterion)
+            attack = MomentumIterativeAttack(model, criterion)
 
-        # attack = FGSM(model, criterion)
-        attack = FGSM(model)
+            # attack = FGSM(model)
+            # attack = MomentumIterativeAttack(model)
+            # attack = SinglePixelAttack(model)
+            # attack = LocalSearchAttack(model)
 
-        # attack = MomentumIterativeAttack(model, criterion)
-        # attack = MomentumIterativeAttack(model)
+            adversarial = attack(image, label=label)
+            new_label = np.argmax(model.predictions(adversarial))
+            print('new label:', categories[new_label])
 
-        # attack = SinglePixelAttack(model)
-        # attack = LocalSearchAttack(model)
+            raw_image = inception_postprocessing(image)
+            raw_adversarial = inception_postprocessing(adversarial)
+            raw_pert = raw_adversarial - raw_image
 
-        adversarial = attack(image, label=label)
-        new_label = np.argmax(model.predictions(adversarial))
-        print('new label:', categories[new_label])
+            save_image(raw_adversarial, adv_path)
+            save_image(raw_pert, pert_path)
 
-        image = inception_postprocessing(image)
-        adversarial = inception_postprocessing(adversarial)
-        pert = adversarial-image
-
-        save_image(adversarial, adv_path)
-        save_image(pert, pert_path)
-
-        # show images
-        plt.subplot(1, 3, 1)
-        plt.imshow(image)
-        plt.subplot(1, 3, 2)
-        plt.imshow(adversarial)
-        plt.subplot(1, 3, 3)
-        plt.imshow(pert)
-        plt.show()
+        # # show images
+        # plt.subplot(1, 3, 1)
+        # plt.imshow(raw_image)
+        # plt.subplot(1, 3, 2)
+        # plt.imshow(raw_adversarial)
+        # plt.subplot(1, 3, 3)
+        # plt.imshow(raw_pert)
+        # plt.show()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
