@@ -43,6 +43,6 @@ Another way to set up Jupyter Environment is to us Jupyter Lab, it's simpler tha
 jupyter lab --ip 10.15.33.211 --port 8890 --app-dir ~/github/jupyter/
 ```
 
-Note: In console mode, browser cannot open directly, so you need to quit by `q` command.
+In your local environment, browser will open a tab to access jupyter page when you type above command.
 
-Then copy URL to your browser, and access jupyter lab.
+If you start jupyter in remote server, you need to access with `http://10.15.33.211:8890/` in local browser.
